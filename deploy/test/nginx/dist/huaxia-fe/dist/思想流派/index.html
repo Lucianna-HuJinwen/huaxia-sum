@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华夏译典通 - 思想流派</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入认证脚本 -->
+    <script src="/common-auth.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e63e34', // 有道红色
+                        secondary: '#f5f5f5', // 浅灰色背景
+                        dark: '#333333', // 深色文本
+                        light: '#f9f9f9', // 浅色背景
+                        // 朱砂红/赤色背景
+                        vermilion: "#9D2933",
+                        // 深褐色
+                        "deep-brown": "#3D1E15",
+                        // 牙白
+                        ivory: "#F8F4E6",
+                        // 青绿色
+                        teal: "#00A680",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        xingshu: ['"Ma Shan Zheng"', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow-sm {
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
+            .transition-smooth {
+                transition: all 0.3s ease;
+            }
+            .hover-lift {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+        }
+    </style>
+    <style>
+        /* 页面特定样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+        
+        /* 自定义输入框样式 */
+        .custom-input {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 8px 12px;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        
+        .custom-input:focus {
+            outline: none;
+            border-color: #e63e34;
+            box-shadow: 0 0 0 3px rgba(230, 62, 52, 0.1);
+        }
+        
+        /* 自定义按钮样式 */
+        .custom-button {
+            background-color: #e63e34;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .custom-button:hover {
+            background-color: #d43832;
+        }
+    </style>
+</head>
+<body class="bg-secondary min-h-screen flex flex-col text-dark">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-gray-200 h-14 flex items-center px-4 sticky top-0 z-30">
+        <div class="flex items-center space-x-4">
+            <!-- 返回按钮 -->
+            <button class="text-gray-600 hover:text-primary" onclick="window.location.href='../index.html'">
+                <i class="fa fa-arrow-left text-lg"></i>
+            </button>
+            <!-- 页面标题 -->
+            <h1 class="text-lg font-bold text-[#3D1E15]">思想流派</h1>
+        </div>
+        <!-- 右侧操作按钮 -->
+        <div class="ml-auto flex items-center space-x-4">
+            <button class="p-2 text-[#3D1E15] hover:text-[#9D2933] rounded-full hover:bg-gray-50 transition-all duration-300" title="新建模板">
+                <i class="fa fa-plus text-lg"></i>
+            </button>
+            <button class="p-2 text-[#3D1E15] hover:text-[#9D2933] rounded-full hover:bg-gray-50 transition-all duration-300" title="删除模板">
+                <i class="fa fa-trash text-lg"></i>
+            </button>
+            <button class="p-2 text-[#3D1E15] hover:text-[#9D2933] rounded-full hover:bg-gray-50 transition-all duration-300" title="编辑模板">
+                <i class="fa fa-pencil text-lg"></i>
+            </button>
+            <button class="p-2 text-[#3D1E15] hover:text-[#9D2933] rounded-full hover:bg-gray-50 transition-all duration-300" title="保存模板">
+                <i class="fa fa-save text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-1 overflow-hidden p-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- 三栏布局：原文概述、翻译任务、译文要求 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 原文概述 -->
+                <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 class="text-base font-semibold text-gray-800 mb-4">原文概述</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">思想流派/学派</label>
+                            <input type="text" class="custom-input" value="儒家思想" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">代表人物/著作</label>
+                            <input type="text" class="custom-input" value="孔子、《论语》" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 flex items-center">
+                                文本类型
+                                <button class="ml-2 text-xs text-gray-400 hover:text-primary" onclick="toggleCollapse('textTypeOptions')">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </label>
+                            <input type="text" id="textTypeInput" class="custom-input" value="经" placeholder="请输入...">
+                            <div id="textTypeOptions" class="hidden mt-2 bg-gray-50 p-2 rounded-md border border-gray-200">
+                                <div class="text-xs text-gray-600 mb-1">推荐选项：</div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('textType', '经')">经</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('textType', '史')">史</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('textType', '子')">子</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('textType', '集')">集</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 flex items-center">
+                                文风
+                                <button class="ml-2 text-xs text-gray-400 hover:text-primary" onclick="toggleCollapse('writingStyleOptions')">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </label>
+                            <input type="text" id="writingStyleInput" class="custom-input" value="学术严谨" placeholder="请输入...">
+                            <div id="writingStyleOptions" class="hidden mt-2 bg-gray-50 p-2 rounded-md border border-gray-200">
+                                <div class="text-xs text-gray-600 mb-1">推荐选项：</div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('writingStyle', '微言大义')">微言大义</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('writingStyle', '秉笔直书')">秉笔直书</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('writingStyle', '委婉含蓄')">委婉含蓄</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary" onclick="selectOption('writingStyle', '沉郁顿挫')">沉郁顿挫</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 翻译任务 -->
+                <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 class="text-base font-semibold text-gray-800 mb-4">翻译任务</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">目的</label>
+                            <input type="text" class="custom-input" value="学术研究参考" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">应用场景</label>
+                            <input type="text" class="custom-input" value="学术出版物" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">译者角色</label>
+                            <input type="text" class="custom-input" value="哲学翻译专家" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 flex items-center">
+                                目标受众
+                                <button class="ml-2 text-xs text-gray-400 hover:text-primary" onclick="toggleCollapse('audienceOptions')">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </label>
+                            <input type="text" class="custom-input" value="哲学研究者" placeholder="请输入...">
+                            <div id="audienceOptions" class="hidden mt-2 bg-gray-50 p-2 rounded-md border border-gray-200">
+                                <div class="text-xs text-gray-600 mb-1">推荐选项：</div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary">专业学者</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary">大众读者</span>
+                                    <span class="text-xs px-2 py-1 bg-white border border-gray-200 rounded cursor-pointer hover:border-primary hover:text-primary">文化爱好者</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 译文要求 -->
+                <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 class="text-base font-semibold text-gray-800 mb-4">译文要求</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">译文体裁</label>
+                            <input type="text" class="custom-input" value="学术论文" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">定义风格</label>
+                            <input type="text" class="custom-input" value="学术严谨" placeholder="请输入...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">特殊要求</label>
+                            <textarea class="custom-input" rows="3" placeholder="请输入...">保留思想流派的核心概念准确性，同时传达中国传统哲学的思想内涵；语言流畅自然，符合目标受众的阅读习惯</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部底部底部按钮操作按钮 -->
+            <div class="mt-8 flex justify-center">
+                <button id="goToTranslateBtn" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">
+                    前往翻译
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-4 px-6 text-xs text-gray-500">
+        <div class="flex justify-center">
+            © 2025 华夏译典通 版权所有
+        </div>
+    </footer>
+
+    <!-- JavaScript 功能 -->
+    <script>
+        // 折叠/展开功能
+        function toggleCollapse(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const isHidden = element.classList.contains('hidden');
+                if (isHidden) {
+                    element.classList.remove('hidden');
+                    // 更新图标方向
+                    const button = element.previousElementSibling.previousElementSibling.querySelector('i');
+                    if (button) {
+                        button.classList.remove('fa-chevron-down');
+                        button.classList.add('fa-chevron-up');
+                    }
+                } else {
+                    element.classList.add('hidden');
+                    // 更新图标方向
+                    const button = element.previousElementSibling.previousElementSibling.querySelector('i');
+                    if (button) {
+                        button.classList.remove('fa-chevron-up');
+                        button.classList.add('fa-chevron-down');
+                    }
+                }
+            }
+        }
+
+        // 选择选项功能
+        function selectOption(type, value) {
+            let inputId;
+            switch(type) {
+                case 'textType':
+                    inputId = 'textTypeInput';
+                    break;
+                case 'writingStyle':
+                    inputId = 'writingStyleInput';
+                    break;
+                default:
+                    console.error('未知的选项类型:', type);
+                    return;
+            }
+            
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = value;
+                console.log(`已选择${type}: ${value}`);
+                
+                // 添加一个短暂的视觉反馈
+                input.style.borderColor = '#e63e34';
+                input.style.boxShadow = '0 0 0 3px rgba(230, 62, 52, 0.1)';
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                    input.style.boxShadow = '';
+                }, 500);
+            } else {
+                console.error('未找到输入框:', inputId);
+            }
+        }
+
+        // 保存模板功能
+        async function saveTemplate() {
+            try {
+                // 获取表单数据
+                const templateData = {
+                    templateName: `思想流派模板_${Date.now()}`, // 唯一模板名称
+                    era: document.querySelector('input[value="儒家思想"]')?.value || '',
+                    author: document.querySelector('input[value="孔子、《论语》"]')?.value || '',
+                    textType: document.getElementById('textTypeInput')?.value || '',
+                    style: document.getElementById('writingStyleInput')?.value || '',
+                    purpose: document.querySelector('input[value="学术研究参考"]')?.value || '',
+                    audience: document.querySelector('input[value="哲学研究者"]')?.value || '',
+                    translatorRole: document.querySelector('input[value="哲学翻译专家"]')?.value || '',
+                    scene: '学术翻译场景',
+                    customRules: document.querySelector('textarea')?.value || ''
+                };
+
+                console.log('准备保存模板数据:', templateData);
+
+                // 调用Template API创建模板
+                const token = localStorage.getItem('hxytt_token');
+                const response = await fetch('/api/template/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify(templateData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('模板创建API响应:', result);
+
+                if (result.code === 1000 && result.data) {
+                    const templateId = result.data;
+                    console.log('模板创建成功，ID:', templateId);
+
+                    // 获取当前选择的板块
+                    const selectedCategory = localStorage.getItem('selectedCategory');
+                    if (selectedCategory) {
+                        // 存储模板ID与板块的关联
+                        localStorage.setItem(`templateId_${selectedCategory}`, templateId);
+                        console.log(`模板ID已关联到板块 ${selectedCategory}:`, templateId);
+
+                        alert('模板保存成功！');
+                    } else {
+                        console.warn('未找到选择的板块信息');
+                        alert('模板保存成功，但未关联到板块！');
+                    }
+                } else {
+                    throw new Error(result.msg || '模板创建失败');
+                }
+
+            } catch (error) {
+                console.error('保存模板失败:', error);
+                alert(`保存模板失败: ${error.message}`);
+            }
+        }
+
+        // 前往翻译功能 - 自动创建模板并跳转
+        async function goToTranslate() {
+            const goToTranslateBtn = document.getElementById('goToTranslateBtn');
+            if (!goToTranslateBtn) return;
+
+            try {
+                // 显示加载状态
+                goToTranslateBtn.disabled = true;
+                goToTranslateBtn.textContent = '创建模板中...';
+                goToTranslateBtn.classList.add('opacity-50');
+
+                console.log('开始自动创建模板...');
+
+                // 获取表单数据
+                const templateData = {
+                    templateName: `思想流派模板_${Date.now()}`, // 唯一模板名称
+                    era: document.querySelector('input[value="儒家思想"]')?.value || '',
+                    author: document.querySelector('input[value="孔子、《论语》"]')?.value || '',
+                    textType: document.getElementById('textTypeInput')?.value || '',
+                    style: document.getElementById('writingStyleInput')?.value || '',
+                    purpose: document.querySelector('input[value="学术研究参考"]')?.value || '',
+                    audience: document.querySelector('input[value="哲学研究者"]')?.value || '',
+                    translatorRole: document.querySelector('input[value="哲学翻译专家"]')?.value || '',
+                    scene: '学术翻译场景',
+                    customRules: document.querySelector('textarea')?.value || ''
+                };
+
+                console.log('模板数据:', templateData);
+
+                // 调用Template API创建模板
+                const token = localStorage.getItem('hxytt_token');
+                if (!token) {
+                    throw new Error('用户未登录，请先登录');
+                }
+
+                const response = await fetch('/api/template/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify(templateData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('模板创建API响应:', result);
+
+                if (result.code === 1000 && result.data) {
+                    const templateId = result.data;
+                    console.log('模板创建成功，ID:', templateId);
+
+                    // 获取当前选择的板块
+                    const selectedCategory = localStorage.getItem('selectedCategory');
+                    if (selectedCategory) {
+                        // 存储模板ID与板块的关联
+                        localStorage.setItem(`templateId_${selectedCategory}`, templateId);
+                        console.log(`模板ID已关联到板块 ${selectedCategory}:`, templateId);
+
+                        // 跳转到翻译页面
+                        window.location.href = '../翻译页面/translation_page.html';
+                    } else {
+                        throw new Error('未找到选择的板块信息');
+                    }
+                } else {
+                    throw new Error(result.msg || '模板创建失败');
+                }
+
+            } catch (error) {
+                console.error('前往翻译失败:', error);
+                alert(`操作失败: ${error.message}`);
+
+                // 恢复按钮状态
+                goToTranslateBtn.disabled = false;
+                goToTranslateBtn.textContent = '前往翻译';
+                goToTranslateBtn.classList.remove('opacity-50');
+            }
+        }
+
+        // 页面加载完成后绑定事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为保存按钮绑定事件
+            const saveButton = document.querySelector('button[title="保存模板"]');
+            if (saveButton) {
+                saveButton.addEventListener('click', saveTemplate);
+                console.log('保存模板按钮事件已绑定');
+            }
+
+            // 为前往翻译按钮绑定事件
+            const goToTranslateBtn = document.getElementById('goToTranslateBtn');
+            if (goToTranslateBtn) {
+                goToTranslateBtn.addEventListener('click', goToTranslate);
+                console.log('前往翻译按钮事件已绑定');
+            }
+
+            // 显示当前选择的板块信息
+            const selectedCategory = localStorage.getItem('selectedCategory');
+            if (selectedCategory) {
+                console.log('当前选择的板块:', selectedCategory);
+            }
+        });
+
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('hxytt_token');
+            if (!token) {
+                alert('请先登录后再访问此页面');
+                window.location.href = '../login.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

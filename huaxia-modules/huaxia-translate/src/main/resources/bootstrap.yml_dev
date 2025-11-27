@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: huaxia-translate
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        namespace: HuaxiaYidianTong
+        server-addr: localhost:8848
+        group: DEFAULT_GROUP
+      config:
+        namespace: HuaxiaYidianTong
+        server-addr: localhost:8848
+        group: DEFAULT_GROUP
+        file-extension: yml
+        shared-configs:
+          - data-id: huaxia-translate-dev.yml
+            group: DEFAULT_GROUP
+            refresh: true

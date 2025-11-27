@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>华夏译典通 - 登录/注册</title>
+  <style>
+    .calligraphy-title { font-family:'SimSun','宋体',serif; color:#D4AF37; text-shadow:1px 1px 2px rgba(0,0,0,.2); }
+    body { background-color:#FFF8E1; }
+    .login-container { background:#fff; border:1px solid #D4AF37; }
+    .login-title, .tab-btn.active { color:#D4AF37; }
+    .input-label { color:#8B0000; }
+    .red-link { color:#8B0000 !important; }
+    .red-button { background-color:#8B0000 !important; }
+    .red-button:hover { background-color:#B22222 !important; }
+    .tab-btn { padding:.5rem 1rem; border-radius:.5rem; border:1px solid #D4AF37; cursor:pointer; }
+    .tab-btn:not(.active){ color:#8B0000; background:#fff7; }
+    .muted{ color:#666; font-size:12px; }
+    .ok{ color:#176b00; font-size:12px; }
+    .err{ color:#b00020; white-space:pre-wrap; font-size:12px; }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#FFF8E1]">
+  <div class="flex min-h-screen items-center justify-center p-4">
+    <div class="container grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
+      <!-- 左侧品牌 -->
+      <div class="flex flex-col items-center justify-center space-y-6 md:items-start">
+        <h1 class="calligraphy-title text-5xl sm:text-6xl">华夏译典通</h1>
+        <div class="relative inline-block mt-2">
+          <div class="absolute -inset-1 bg-gradient-to-r from-red-600 via-amber-500 to-yellow-400 rounded-lg blur opacity-30"></div>
+          <div class="relative bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-lg px-8 py-6 shadow-xl">
+            <div class="text-center md:text-left">
+              <p class="text-xl font-bold text-amber-800 mb-2">以传统文化为基</p>
+              <div class="w-16 h-0.5 bg-gradient-to-r from-red-500 to-amber-500 mx-auto md:mx-0 mb-3"></div>
+              <p class="text-xl font-bold text-amber-800">向世界讲好中国故事</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧 卡片 -->
+      <div class="flex items-center justify-center">
+        <div class="w-full max-w-lg py-2 bg-white rounded-lg shadow login-container">
+          <div class="px-6 pt-6 flex items-center justify-between">
+            <h2 class="text-xl font-semibold login-title">账户</h2>
+            <div class="space-x-2">
+              <button id="tab-login" class="tab-btn active">登录</button>
+              <button id="tab-register" class="tab-btn">注册</button>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6 pt-4">
+            <!-- 登录表单：邮箱 + 密码 -->
+            <form id="form-login" class="space-y-4">
+              <div class="space-y-2">
+                <label for="login-email" class="block text-sm font-medium input-label">邮箱</label>
+                <input id="login-email" type="email" placeholder="请输入邮箱"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <div class="space-y-2">
+                <label for="login-password" class="block text-sm font-medium input-label">密码</label>
+                <input id="login-password" type="password" placeholder="请输入密码（至少8位）"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <div class="flex justify-between text-sm">
+                <a href="javascript:void(0)" id="to-register" class="red-link hover:underline">没有账号？去注册</a>
+                <a href="/forgot-password" class="red-link hover:underline">忘记密码</a>
+              </div>
+              <button type="submit" class="w-full text-white py-2 rounded red-button hover:bg-red-700">登录</button>
+              <p id="tip-login" class="muted"></p>
+            </form>
+
+            <!-- 注册表单：邮箱 + 验证码 + 昵称 + 密码 + 确认密码 -->
+            <form id="form-register" class="space-y-4 hidden">
+              <div class="space-y-2">
+                <label for="reg-email" class="block text-sm font-medium input-label">邮箱</label>
+                <input id="reg-email" type="email" placeholder="请输入邮箱"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <div class="space-y-2">
+                <label for="reg-code" class="block text-sm font-medium input-label">验证码</label>
+                <div class="flex space-x-2">
+                  <input id="reg-code" type="text" placeholder="邮箱验证码"
+                         class="block flex-1 border border-gray-300 rounded px-3 py-2"/>
+                  <button id="btn-sendcode" type="button"
+                          class="whitespace-nowrap px-3 py-2 text-sm text-white rounded red-button">获取验证码</button>
+                </div>
+                <p id="tip-sendcode" class="muted"></p>
+              </div>
+              <div class="space-y-2">
+                <label for="reg-nickname" class="block text-sm font-medium input-label">昵称</label>
+                <input id="reg-nickname" type="text" placeholder="请输入昵称"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <div class="space-y-2">
+                <label for="reg-password" class="block text-sm font-medium input-label">密码</label>
+                <input id="reg-password" type="password" placeholder="设置密码（至少8位）"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <div class="space-y-2">
+                <label for="reg-password2" class="block text-sm font-medium input-label">确认密码</label>
+                <input id="reg-password2" type="password" placeholder="再次输入密码"
+                       class="block w-full border border-gray-300 rounded px-3 py-2"/>
+              </div>
+              <button type="submit" class="w-full text-white py-2 rounded red-button hover:bg-red-700">注册</button>
+              <p id="tip-register" class="muted"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- 放在 login.html 里你自己的 <script> 之前 -->
+<script>window.API_BASE = '/api';</script>
+<script src="/common-api.js"></script>
+<script src="/common-auth.js"></script>
+
+  <!-- 逻辑脚本 -->
+  <script>
+    /** ========== 配置：只需改这里就能从 Mock 切到正式 ========== */
+    const BASE = "/api";                       // 固定走 Vite 代理
+    const PATH_SEND_CODE = "/user/sendCode";   // 发送验证码（你们文档：Query ?email）
+    const PATH_LOGIN     = "/user/pwd/login";  // 登录（邮箱+密码）
+    const PATH_REGISTER  = "/user/register";   // 注册（email, code, password, confirmPassword, nickname）
+    const SEND_CODE_USE_QUERY = true;          // 后端恢复后若改成 body 传 email，把它设为 false
+    const TOKEN_KEY = "hxytt_token";
+
+    /** ========== 小工具 ========== */
+    const $ = (s)=>document.querySelector(s);
+    const withTimeout = (p,ms=30000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("请求超时")),ms))]);
+    async function api(path,{method="GET",body,isForm=false}={}) {
+      const headers = {};
+      const t = localStorage.getItem(TOKEN_KEY);
+      if (t) headers["Authorization"] = `Bearer ${t}`;
+      let payload = body;
+      if (!isForm && body && typeof body === "object") {
+        headers["Content-Type"] = "application/json";
+        payload = JSON.stringify(body);
+      }
+      const resp = await withTimeout(fetch(BASE+path,{method,headers,body:payload}));
+      const ct = resp.headers.get("content-type")||"";
+      const data = ct.includes("application/json") ? await resp.json() : await resp.text();
+      if (!resp.ok) throw new Error(data?.message || data?.error || `HTTP ${resp.status}`);
+      return data;
+    }
+    const setOK =(el,msg)=>{ el.className="ok"; el.textContent=msg; };
+    const setERR=(el,msg)=>{ el.className="err"; el.textContent=msg; };
+    const setMuted=(el,msg)=>{ el.className="muted"; el.textContent=msg; };
+
+    /** ========== 页签切换 ========== */
+    const tabLogin = $("#tab-login"), tabReg = $("#tab-register");
+    const formLogin = $("#form-login"), formReg = $("#form-register");
+    const toRegister = $("#to-register");
+    function showLogin(){ formLogin.classList.remove("hidden"); formReg.classList.add("hidden"); tabLogin.classList.add("active"); tabReg.classList.remove("active"); }
+    function showRegister(){ formReg.classList.remove("hidden"); formLogin.classList.add("hidden"); tabReg.classList.add("active"); tabLogin.classList.remove("active"); }
+    tabLogin.addEventListener("click", showLogin);
+    tabReg.addEventListener("click", showRegister);
+    toRegister.addEventListener("click", showRegister);
+
+    /** ========== 发送验证码（注册用） ========== */
+    $("#btn-sendcode").addEventListener("click", async ()=>{
+      const email = $("#reg-email").value.trim();
+      const tip = $("#tip-sendcode");
+      if (!email) return setERR(tip,"请输入邮箱");
+      const btn = $("#btn-sendcode");
+      btn.disabled = true; btn.textContent = "发送中…"; setMuted(tip,"");
+      try{
+        if (SEND_CODE_USE_QUERY) {
+          await api(`${PATH_SEND_CODE}?email=${encodeURIComponent(email)}`, { method:"POST" });
+        } else {
+          await api(PATH_SEND_CODE, { method:"POST", body:{ email } });
+        }
+        setOK(tip,"验证码已发送，请在 60 秒内查收");
+        let left = 60; const timer = setInterval(()=>{ left--; btn.textContent = `${left}秒后重发`; if(left<=0){clearInterval(timer); btn.disabled=false; btn.textContent="获取验证码"; }}, 1000);
+      }catch(e){ btn.disabled=false; btn.textContent="获取验证码"; setERR(tip, e.message); }
+    });
+
+    /** ========== 注册（验证码） ========== */
+    $("#form-register").addEventListener("submit", async (ev)=>{
+      ev.preventDefault();
+      const email = $("#reg-email").value.trim();
+      const code = $("#reg-code").value.trim();
+      const nickname = $("#reg-nickname").value.trim();
+      const password = $("#reg-password").value;
+      const confirmPassword = $("#reg-password2").value;
+      const tip = $("#tip-register");
+      if(!email||!code||!nickname||!password||!confirmPassword) return setERR(tip,"请填写完整信息");
+      if(password.length < 8) return setERR(tip,"密码至少 8 位");
+      if(password!==confirmPassword) return setERR(tip,"两次密码不一致");
+      setMuted(tip,"注册中…");
+      try{
+        const res = await api(PATH_REGISTER, { method:"POST", body:{ email, code, password, confirmPassword, nickName: nickname } });
+        setOK(tip, res?.message || "注册成功，请前往登录");
+        showLogin();
+      }catch(e){ setERR(tip, e.message); }
+    });
+
+    /** ========== 登录（邮箱+密码） ========== */
+    $("#form-login").addEventListener("submit", async (ev)=>{
+      ev.preventDefault();
+      const email = $("#login-email").value.trim();
+      const password = $("#login-password").value;
+      const tip = $("#tip-login");
+      if(!email||!password) return setERR(tip,"请输入邮箱和密码");
+      setMuted(tip,"登录中…");
+      try{
+        const res = await api(PATH_LOGIN, { method:"POST", body:{ email, password } });
+        const token = res?.data || res?.token;
+        if(!token) throw new Error("后端未返回 token");
+        CommonAuth.setToken(token);
+        setOK(tip, "登录成功，正在进入系统…");
+        window.location.href = "index.html";
+      }catch(e){ setERR(tip, e.message); }
+    });
+  </script>
+</body>
+</html>

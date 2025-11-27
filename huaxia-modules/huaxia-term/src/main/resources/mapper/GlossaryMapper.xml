@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liam.term.mapper.glossary.GlossaryMapper">
+
+    <select id="selectGlossaryList" resultType="com.liam.term.domain.glossary.vo.GlossaryVO">
+        SELECT
+            g.id as glossaryId,
+            g.title,
+            g.source_language as sourceLanguage,
+            g.target_language as targetLanguage,
+            g.user_id as userId,
+            g.is_public as isPublic,
+            g.create_time as createTime
+        FROM glossary g
+        LEFT JOIN user_account u ON g.user_id = u.id
+        WHERE 1 = 1
+        
+        <!-- 标题搜索 -->
+        <if test="query.title != null and query.title != ''">
+            AND g.title LIKE CONCAT('%', #{query.title}, '%')
+        </if>
+        
+        <!-- 是否公开过滤 -->
+        <if test="query.isPublic != null">
+            AND g.is_public = #{query.isPublic}
+        </if>
+        
+        <!-- 根据用户角色过滤 -->
+        <choose>
+            <!-- 管理员可以看到所有术语库 -->
+            <when test="currentUserRole == 0">
+                <!-- 管理员不添加额外权限限制 -->
+            </when>
+            <!-- 普通用户只能看到自己的私有术语库和所有公开术语库 -->
+            <otherwise>
+                AND (
+                    g.user_id = #{currentUserId}
+                    OR g.is_public = 1
+                )
+            </otherwise>
+        </choose>
+        
+        ORDER BY g.create_time DESC
+    </select>
+</mapper>

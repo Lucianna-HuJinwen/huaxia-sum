@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>术语库详情 - 华夏译典通</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#dc2626',
+                        secondary: '#b91c1c',
+                        success: '#16a34a',
+                        warning: '#d97706',
+                        danger: '#dc2626',
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            300: '#d1d5db',
+                            400: '#9ca3af',
+                            500: '#6b7280',
+                            600: '#4b5563',
+                            700: '#374151',
+                            800: '#1f2937',
+                            900: '#111827',
+                        }
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .shadow-custom {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .transition-custom {
+                transition: all 0.2s ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-gray-800">
+    <!-- 顶部导航栏 -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fa fa-language text-primary text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-primary">华夏译典通</span>
+                    </a>
+                </div>
+                
+                <!-- 中间导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <div class="relative" id="languageAssetsDropdownContainer">
+                        <button id="languageAssetsBtn" class="flex items-center text-gray-700 hover:text-primary transition-colors">
+                            <span>语言资产</span>
+                            <i class="fa fa-caret-down ml-1 text-xs"></i>
+                        </button>
+                        <!-- 下拉菜单 -->
+                        <div id="languageAssetsDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                            <a href="../terminology_management/terminology_management.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">术语库管理</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">翻译记忆库</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">语料库</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧用户信息 -->
+                <div class="flex items-center space-x-4">
+                    <button id="notificationBtn" class="text-gray-600 hover:text-primary transition-colors relative">
+                        <i class="fa fa-bell-o text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="relative" id="userDropdownContainer">
+                        <button id="userBtn" class="flex items-center">
+                            <img src="https://picsum.photos/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary">
+                            <i class="fa fa-caret-down ml-2 text-xs text-gray-500"></i>
+                        </button>
+                        <!-- 用户下拉菜单 -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">
+                                <i class="fa fa-file-text-o mr-2"></i>模板管理
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">
+                                <i class="fa fa-tasks mr-2"></i>项目管理
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">账号设置</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">帮助中心</a>
+                            <div class="border-t border-gray-200 my-1"></div>
+                            <a href="../login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors js-logout">退出登录</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- 面包屑导航 -->
+        <div class="text-sm text-gray-500 mb-6">
+            <a href="../index.html" class="hover:text-primary">首页</a> &gt; 
+            <a href="terminology_management.html" class="hover:text-primary">术语库管理</a> &gt; 
+            <span id="currentTerminologyName" class="text-primary font-medium">术语库详情</span>
+        </div>
+
+        <!-- 术语库标题和操作区 -->
+        <div class="bg-white rounded-lg shadow-custom p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+                <h1 id="terminologyTitle" class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">术语库详情</h1>
+                <div class="flex space-x-3">
+                    <button id="importTermsBtn" class="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa fa-upload mr-1"></i> 导入术语
+                    </button>
+                    <button id="exportTermsBtn" class="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa fa-download mr-1"></i> 导出术语
+                    </button>
+                    <button id="addTermBtn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                        <i class="fa fa-plus mr-1"></i> 添加术语
+                    </button>
+                </div>
+            </div>
+
+            <!-- 术语库信息卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h3 class="text-sm text-gray-500 mb-1">术语数量</h3>
+                    <p id="termCount" class="text-2xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h3 class="text-sm text-gray-500 mb-1">源语言</h3>
+                    <p id="sourceLanguage" class="text-xl font-bold text-gray-800">中文(中国)</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h3 class="text-sm text-gray-500 mb-1">目标语言</h3>
+                    <p id="targetLanguage" class="text-xl font-bold text-gray-800">英文(英国)</p>
+                </div>
+            </div>
+
+            <!-- 术语搜索和筛选 -->
+            <div class="mb-6">
+                <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                    <div class="relative flex-grow">
+                        <input type="text" id="termSearch" placeholder="搜索术语..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                        <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex space-x-3">
+                        <select id="termFilter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                            <option value="all">全部状态</option>
+                            <option value="normal">正常</option>
+                            <option value="draft">草稿</option>
+                            <option value="review">待审核</option>
+                        </select>
+                        <button id="advancedSearchBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                            <i class="fa fa-sliders mr-1"></i> 高级搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 术语列表 -->
+        <div class="bg-white rounded-lg shadow-custom overflow-hidden mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="selectAllTerms" class="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                序号
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                源语言术语
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                目标语言术语
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                状态
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                创建时间
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="termsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- 术语行会通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 空状态提示 -->
+            <div id="emptyState" class="py-12 px-4 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                    <i class="fa fa-book text-2xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">暂无术语</h3>
+                <p class="text-gray-500 mb-6">点击"添加术语"按钮开始创建第一个术语</p>
+                <button id="addFirstTermBtn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                    <i class="fa fa-plus mr-1"></i> 添加术语
+                </button>
+            </div>
+
+            <!-- 分页控件 -->
+            <div id="paginationControls" class="hidden mt-4 p-4 flex justify-between items-center border-t border-gray-200">
+                <div class="text-sm text-gray-500">
+                    共<span id="totalItemsCount">0</span>条记录，当前第<span id="currentPage">1</span>/<span id="totalPages">1</span>页
+                </div>
+                <div class="flex space-x-1">
+                    <button id="prevPageBtn" class="px-3 py-1 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="page1Btn" class="px-3 py-1 border border-primary bg-primary text-white rounded-md">1</button>
+                    <button id="nextPageBtn" class="px-3 py-1 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 添加/编辑术语弹窗 -->
+    <div id="termModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h2 id="modalTitle" class="text-xl font-bold text-gray-800">添加术语</h2>
+                <button id="closeTermModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="termForm">
+                    <div class="mb-4">
+                        <label for="sourceTerm" class="block text-sm font-medium text-gray-700 mb-1">源语言术语</label>
+                        <input type="text" id="sourceTerm" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="请输入源语言术语">
+                    </div>
+                    <div class="mb-4">
+                        <label for="targetTerm" class="block text-sm font-medium text-gray-700 mb-1">目标语言术语</label>
+                        <input type="text" id="targetTerm" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="请输入目标语言术语">
+                    </div>
+                    <div class="mb-4">
+                        <label for="termDefinition" class="block text-sm font-medium text-gray-700 mb-1">定义</label>
+                        <textarea id="termDefinition" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="请输入术语定义"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="termContext" class="block text-sm font-medium text-gray-700 mb-1">上下文</label>
+                        <textarea id="termContext" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="请输入上下文示例"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="termStatus" class="block text-sm font-medium text-gray-700 mb-1">状态</label>
+                        <select id="termStatus" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                            <option value="normal">正常</option>
+                            <option value="draft">草稿</option>
+                            <option value="review">待审核</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" id="cancelTermBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">取消</button>
+                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-4 px-6 text-xs text-gray-500">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-2 md:mb-0">
+                <a href="#" class="hover:text-primary">关于我们</a> | 
+                <a href="#" class="hover:text-primary">联系我们</a> | 
+                <a href="#" class="hover:text-primary">使用条款</a> | 
+                <a href="#" class="hover:text-primary">隐私政策</a>
+            </div>
+            <div>
+                © 2025 华夏译典通 版权所有
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入外部JavaScript文件 -->
+     <script src="/common-auth.js"></script>
+     <script src="/common-api.js"></script>
+    <script src="/terminology_management/terminology_detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试</title>
+</head>
+<body>
+    <h1>API测试页面</h1>
+    <div id="result"></div>
+
+    <script>
+        // 测试API连接
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+
+            try {
+                console.log('开始测试API连接...');
+
+                // 测试健康检查
+                const healthResponse = await fetch('http://localhost:19202/actuator/health');
+                console.log('健康检查响应:', healthResponse);
+
+                // 测试翻译统计API
+                const statsResponse = await fetch('http://localhost:19202/translate/statistics?pageNum=1&pageSize=10');
+                console.log('翻译统计API响应:', statsResponse);
+
+                const statsData = await statsResponse.json();
+                console.log('翻译统计数据:', statsData);
+
+                resultDiv.innerHTML = `
+                    <h2>测试结果</h2>
+                    <p>健康检查: ${healthResponse.ok ? '✅ 成功' : '❌ 失败'}</p>
+                    <p>翻译统计API: ${statsResponse.ok ? '✅ 成功' : '❌ 失败'}</p>
+                    <p>返回数据: ${JSON.stringify(statsData, null, 2)}</p>
+                `;
+
+            } catch (error) {
+                console.error('测试失败:', error);
+                resultDiv.innerHTML = `
+                    <h2>测试失败</h2>
+                    <p>错误: ${error.message}</p>
+                    <p>请检查:</p>
+                    <ul>
+                        <li>翻译服务是否运行在 http://localhost:19202</li>
+                        <li>CORS配置是否正确</li>
+                        <li>网络连接是否正常</li>
+                    </ul>
+                `;
+            }
+        }
+
+        // 页面加载完成后执行测试
+        testAPI();
+    </script>
+</body>
+</html>

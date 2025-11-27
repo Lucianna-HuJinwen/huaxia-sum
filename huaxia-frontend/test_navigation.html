@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航测试 - 华夏译典通</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        a {
+            color: #e63e34;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-2xl font-bold mb-4">华夏译典通 - 导航测试</h1>
+    
+    <div class="test-section">
+        <h2 class="text-xl font-semibold mb-2">主页面导航测试</h2>
+        <p><a href="index.html">前往主页面 (index.html)</a></p>
+    </div>
+    
+    <div class="test-section">
+        <h2 class="text-xl font-semibold mb-2">术语库管理页面导航测试</h2>
+        <p><a href="terminology_management/terminology_management.html">前往术语库管理页面 (terminology_management/terminology_management.html)</a></p>
+    </div>
+    
+    <div class="test-section">
+        <h2 class="text-xl font-semibold mb-2">跨页面导航测试</h2>
+        <p><a href="index.html" target="_blank">在新标签页打开主页面</a></p>
+        <p><a href="terminology_management/terminology_management.html" target="_blank">在新标签页打开术语库管理页面</a></p>
+    </div>
+    
+    <div class="test-section">
+        <h2 class="text-xl font-semibold mb-2">资源文件访问测试</h2>
+        <p><a href="mainpage/style.css" target="_blank">查看主页面样式文件</a></p>
+        <p><a href="mainpage/script.js" target="_blank">查看主页面脚本文件</a></p>
+        <p><a href="terminology_management/terminology_management.js" target="_blank">查看术语库管理脚本文件</a></p>
+    </div>
+    
+    <div class="test-section">
+        <h2 class="text-xl font-semibold mb-2">当前路径信息</h2>
+        <p>当前页面URL: <span id="current-url"></span></p>
+        <p>当前页面路径: <span id="current-pathname"></span></p>
+    </div>
+    
+    <script>
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('current-pathname').textContent = window.location.pathname;
+        
+        // 添加链接点击事件日志
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                console.log('点击链接:', this.href);
+                // 不阻止默认行为，让链接正常跳转
+            });
+        });
+    </script>
+</body>
+</html>

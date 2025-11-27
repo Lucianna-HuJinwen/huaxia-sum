@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华夏译典通 - 术语库管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入外部Tailwind配置 -->
+    <script src="/terminology_management/tailwind.config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Google Fonts的马善政字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <!-- 外部样式文件 -->
+  <link rel="stylesheet" crossorigin href="/assets/terminology-iY6yMslG.css">
+</head>
+<body class="bg-secondary min-h-screen flex flex-col text-dark">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-gray-200 h-16 sticky top-0 z-50">
+        <div class="container mx-auto px-4 h-full">
+            <div class="flex items-center justify-between h-full">
+                <!-- 左侧Logo -->
+                <a href="../index.html" class="text-xl font-bold text-[#3D1E15] flex items-center hover:text-primary transition-colors">
+                    <span class="mr-2 text-2xl">📚</span>
+                    华夏译典通
+                </a>
+                
+                <!-- 中间语言资产下拉菜单 -->
+                <div class="absolute left-1/2 transform -translate-x-1/2">
+                    <button id="languageAssetsBtn" class="flex items-center px-4 py-2 rounded-md text-[#3D1E15] hover:bg-gray-50 transition-colors">
+                        语言资产
+                        <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="languageAssetsDropdown" class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden z-50">
+                        <div class="py-1">
+                            <a href="terminology_management.html" class="block px-4 py-2 text-sm text-primary font-medium">
+                                <i class="fa fa-book mr-2"></i>术语库管理
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
+                                <i class="fa fa-database mr-2"></i>记忆库管理
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧用户信息 -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="userBtn" class="flex items-center">
+                            <img src="https://picsum.photos/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary">
+                            <i class="fa fa-caret-down ml-2 text-xs text-gray-500"></i>
+                        </button>
+                        <!-- 用户下拉菜单 -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">
+                                <i class="fa fa-file-text-o mr-2"></i>模板管理
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">
+                                <i class="fa fa-tasks mr-2"></i>项目管理
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors">账号设置</a>
+                            <div class="border-t border-gray-200 my-1"></div>
+                            <a href="../login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors js-logout">退出登录</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 创建术语库弹窗 -->
+    <div id="createTerminologyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-[#3D1E15]">创建术语库</h2>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="createTerminologyForm">
+                <div class="mb-4">
+                    <label for="terminologyName" class="block text-gray-700 mb-2">
+                        <span class="text-red-500">*</span>术语库名称
+                    </label>
+                    <input type="text" id="terminologyName" placeholder="请输入术语库名称" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">描述</label>
+                    <textarea placeholder="请输入术语库描述(可选)"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary h-24"></textarea>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <div class="flex-1">
+                        <label for="sourceLang" class="block text-gray-700 mb-2">
+                            <span class="text-red-500">*</span>源语言
+                        </label>
+                        <select id="sourceLang" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                            <option value="zh">中文 (zh)</option>
+                            <option value="en">English (en)</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label for="targetLang" class="block text-gray-700 mb-2">
+                            <span class="text-red-500">*</span>目标语言
+                        </label>
+                        <select id="targetLang" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                            <option value="en">English (en)</option>
+                            <option value="zh">中文 (zh)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="text-red-500">*</span>状态
+                    </label>
+                    <select required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                        <option value="normal">正常</option>
+                        <option value="pending">待完善</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" id="cancelCreateBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                        取消
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-red-600 transition-colors">
+                        确认
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="flex-1 p-4 overflow-y-auto">
+        <div class="max-w-6xl mx-auto">
+            <div class="max-w-6xl mx-auto">
+                <!-- 板块标题 -->
+                <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200">
+                    <h1 class="text-2xl font-bold text-[#3D1E15] flex items-center">
+                        <i class="fa fa-sliders mr-2 text-primary"></i>
+                        自定义术语库
+                    </h1>
+                    <p class="text-gray-600 mt-2">用户自定义的专业术语翻译参考库</p>
+                </div>
+
+                <!-- 搜索和创建按钮区域 -->
+                <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <input type="text" placeholder="搜索自定义术语库..." 
+                            class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                        <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button id="createTerminologyBtn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center">
+                        <i class="fa fa-plus mr-2"></i>
+                        创建术语库
+                    </button>
+                </div>
+
+                <!-- 术语库列表区域 -->
+                <div class="bg-white rounded-lg p-4 border border-gray-200 overflow-x-auto">
+                    <table id="terminologyTable" class="w-full min-w-[700px]">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">序号</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">名称</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">状态</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">源语言</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">目标语言</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">创建时间</th>
+                                <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 术语库列表将通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+
+                    <!-- 分页控件 -->
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="text-sm text-gray-500">
+                            共5条记录，当前第1/1页
+                        </div>
+                        <div class="flex space-x-1">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                            <button class="px-3 py-1 border border-primary bg-primary text-white rounded-md">1</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed">
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-4 px-6 text-xs text-gray-500">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-2 md:mb-0">
+                <a href="#" class="hover:text-primary">关于我们</a> | 
+                <a href="#" class="hover:text-primary">联系我们</a> | 
+                <a href="#" class="hover:text-primary">使用条款</a> | 
+                <a href="#" class="hover:text-primary">隐私政策</a>
+            </div>
+            <div>
+                © 2025 华夏译典通 版权所有
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入外部JavaScript文件 -->
+     <script>
+    // 开发阶段本地测试用（学长拿到代码只要改这行）
+    window.API_BASE = 'http://127.0.0.1:19200'; // <-- 学长可换为网关域名
+    </script>
+     <script src="/common-auth.js"></script>
+     <script src="/common-api.js"></script>
+    <script src="/terminology_management/terminology_management.js"></script>
+</body>
+</html>

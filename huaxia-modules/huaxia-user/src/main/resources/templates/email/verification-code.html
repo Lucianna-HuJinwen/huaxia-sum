@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱注册-验证码</title>
+    <style>
+        table {
+            width: 700px;
+            margin: 0 auto;
+        }
+
+        #top {
+            width: 700px;
+            border-bottom: 1px solid #ccc;
+            margin: 0 auto 30px;
+        }
+
+        #top table {
+            font: 12px Tahoma, Arial, 宋体;
+            height: 40px;
+        }
+
+        #content {
+            width: 680px;
+            padding: 0 10px;
+            margin: 0 auto;
+        }
+
+        #content_top {
+            line-height: 1.5;
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: #4d4d4d;
+        }
+
+        #content_top strong {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        #content_top strong span {
+            color: #f60;
+            font-size: 16px;
+        }
+
+        #verificationCode {
+            color: #f60;
+            font-size: 24px;
+        }
+
+        #content_bottom {
+            margin-bottom: 30px;
+        }
+
+        #content_bottom small {
+            display: block;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #747474;
+        }
+
+        #bottom {
+            width: 700px;
+            margin: 0 auto;
+        }
+
+        #bottom div {
+            padding: 10px 10px 0;
+            border-top: 1px solid #ccc;
+            color: #747474;
+            margin-bottom: 20px;
+            line-height: 1.3em;
+            font-size: 12px;
+        }
+
+        #content_top strong span {
+            font-size: 18px;
+            color: #FE4F70;
+        }
+
+        #sign {
+            text-align: right;
+            font-size: 18px;
+            color: #FE4F70;
+            font-weight: bold;
+        }
+
+        #verificationCode {
+            height: 100px;
+            width: 680px;
+            text-align: center;
+            margin: 30px 0;
+            background: #f8f9fa;
+            border: 2px solid #FE4F70;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .verification-code-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FE4F70;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 700px) {
+            table {
+                width: 100%;
+            }
+            
+            #top, #content, #bottom {
+                width: 100%;
+            }
+            
+            #verificationCode {
+                width: 100%;
+            }
+            
+            .verification-code-text {
+                font-size: 36px;
+                letter-spacing: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <div id="top">
+                    <table>
+                        <tbody><tr><td></td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="content">
+                    <div id="content_top">
+                        <strong>尊敬的用户：您好！</strong>
+                        <strong>
+                            您正在进行<span>注册账号</span>操作，请在验证码中输入以下验证码完成操作：
+                        </strong>
+                        <div id="verificationCode">
+                            <div class="verification-code-text">{{CODE}}</div>
+                        </div>
+                    </div>
+                    <div id="content_bottom">
+                        <div style="margin-top: 15px; font-size: 14px; color: #666;">
+                            验证码有效期为 <strong style="color: #FE4F70;">5分钟</strong>，请及时验证
+                        </div>
+                        <br>
+                        <small>
+                            注意：此操作可能会修改您的密码、登录邮箱或绑定手机。如非本人操作，请及时登录并修改密码以保证帐户安全
+                            <br>（工作人员不会向你索取此验证码，请勿泄漏！)
+                        </small>
+                    </div>
+                </div>
+                <div id="bottom">
+                    <div>
+                        <p>此为系统邮件，请勿回复<br>
+                        </p>
+                        <p id="sign">——华夏译典通</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html> 

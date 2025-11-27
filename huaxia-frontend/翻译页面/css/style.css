@@ -1,0 +1,91 @@
+html, body, main, .main, #app, .app, body > div, body > main, aside {
+    overflow: hidden !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+    scrollbar-width: none !important;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar, main::-webkit-scrollbar,
+aside::-webkit-scrollbar, body > div::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* 主页面输出框添加可自定义的滚动条 */
+.output-scrollbar {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.output-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.output-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.output-scrollbar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.output-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* 淡化输入输出框滚动条，仅内容超出且鼠标悬停时明显 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+    transition: background 0.3s;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(193,193,193,0.15);
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(193,193,193,0.55);
+}
+.custom-scrollbar:active::-webkit-scrollbar-thumb {
+    background: #a1a1a1;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 仅内容超出时显示且平时更淡的滚动条，鼠标悬停加深 */
+.custom-scrollbar {
+    overflow-x: auto;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(180,180,180,0.07); /* 默认极淡 */
+    border-radius: 4px;
+    transition: background 0.25s;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(140,140,140,0.35);
+}
+.custom-scrollbar:active::-webkit-scrollbar-thumb {
+    background: rgba(140,140,140,0.65);
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+// 隐藏滚动条但允许滚动（用于外层容器）
+.hide-scrollbar {
+    -ms-overflow-style: none;      /* IE/Edge */
+    scrollbar-width: none;        /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;                /* Chrome/Safari */
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华夏译典通 - 翻译统计管理</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e63e34', // 有道红色
+                        secondary: '#f5f5f5', // 浅灰色背景
+                        dark: '#333333', // 深色文本
+                        light: '#f9f9f9', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-secondary min-h-screen text-dark">
+
+    <!-- 头部导航 -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">翻译统计管理</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../翻译页面/translation_page.html" class="text-gray-500 hover:text-primary transition-colors">
+                        <i class="fa fa-arrow-left mr-2"></i>返回翻译页面
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- 搜索和筛选区域 -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <label for="userIdSearch" class="text-sm font-medium text-gray-700">用户ID:</label>
+                        <input 
+                            type="text" 
+                            id="userIdSearch" 
+                            placeholder="输入用户ID进行筛选"
+                            class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+                        >
+                    </div>
+                    <button 
+                        id="searchBtn" 
+                        class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md text-sm transition-colors"
+                    >
+                        <i class="fa fa-search mr-2"></i>搜索
+                    </button>
+                    <button 
+                        id="clearBtn" 
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
+                    >
+                        <i class="fa fa-refresh mr-2"></i>清空
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">每页显示:</span>
+                    <select id="pageSizeSelect" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <option value="10">10条</option>
+                        <option value="20" selected>20条</option>
+                        <option value="50">50条</option>
+                        <option value="100">100条</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fa fa-users text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">总记录数</p>
+                        <p id="totalRecords" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fa fa-book text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">平均术语库数</p>
+                        <p id="avgGlossaryCount" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fa fa-search text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">平均匹配术语数</p>
+                        <p id="avgMatchedTerms" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fa fa-user text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">活跃用户数</p>
+                        <p id="activeUsers" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">翻译统计记录</h3>
+            </div>
+            
+            <!-- 加载状态 -->
+            <div id="loadingState" class="hidden p-8 text-center">
+                <i class="fa fa-spinner fa-spin text-2xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">正在加载数据...</p>
+            </div>
+
+            <!-- 表格内容 -->
+            <div id="tableContainer" class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">记录ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">术语库数量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">匹配术语数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- 数据行将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页控件 -->
+            <div id="paginationContainer" class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="flex items-center text-sm text-gray-700">
+                    <span id="paginationInfo">显示第 1-20 条，共 0 条记录</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="prevPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa fa-chevron-left"></i> 上一页
+                    </button>
+                    <span id="pageNumbers" class="flex items-center space-x-1">
+                        <!-- 页码按钮将通过JavaScript动态生成 -->
+                    </span>
+                    <button id="nextPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        下一页 <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 引入外部JavaScript文件 -->
+    <script>
+        // 开发阶段本地测试用 - 直接访问翻译服务
+        window.API_BASE = 'http://localhost:19202';
+    </script>
+    <script src="/common-auth.js"></script>
+    <!-- 不使用common-api.js，直接使用自定义的fetch逻辑 -->
+    <script src="/翻译统计管理/translation_statistics.js"></script>
+</body>
+</html>
