@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华夏译典通 - 项目全流程管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e63e34',
+                        secondary: '#f5f5f5',
+                        dark: '#333333'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-dark h-screen flex flex-col">
+    <header class="bg-white border-b border-gray-200 h-16 flex items-center px-6 shadow-sm shrink-0 z-10">
+        <div class="flex items-center w-full justify-between">
+            <div class="flex items-center">
+                <a href="../index.html" class="text-gray-500 hover:text-primary mr-4"><i class="fa fa-arrow-left"></i> 返回平台</a>
+                <h1 class="text-xl font-bold text-gray-800"><i class="fa fa-sitemap mr-2 text-primary"></i>翻译项目管理工作台</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">
+                    <i class="fa fa-user-circle mr-1"></i> 当前角色：<span id="currentRole">项目经理</span>
+                </div>
+                <button onclick="switchRole()" class="text-xs text-gray-400 hover:text-primary underline">切换角色(演示用)</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="font-bold text-gray-700">我的项目</h2>
+                <button onclick="openCreateModal()" class="text-primary hover:bg-red-50 p-1.5 rounded transition-colors" title="新建项目">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div id="projectList" class="flex-1 overflow-y-auto p-2 space-y-2">
+                </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col min-w-0 bg-gray-50">
+            <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-gray-400">
+                <i class="fa fa-folder-open-o text-6xl mb-4 text-gray-300"></i>
+                <p>请选择左侧项目或新建一个项目</p>
+            </div>
+
+            <div id="projectDetail" class="flex-1 flex flex-col hidden h-full">
+                <div class="bg-white border-b border-gray-200 p-6 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 id="detailTitle" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded"><i class="fa fa-circle text-xs mr-1"></i>进行中</span>
+                                <span><i class="fa fa-calendar mr-1"></i>截止：<span id="detailDeadline"></span></span>
+                                <span><i class="fa fa-database mr-1"></i>挂载语料：<span id="detailGlossary" class="font-medium text-primary"></span></span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+                                <i class="fa fa-users mr-1"></i> 成员管理
+                            </button>
+                            <button id="btnExportAll" class="px-4 py-2 bg-primary text-white rounded hover:bg-red-600 text-sm shadow-md transition-colors">
+                                <i class="fa fa-download mr-1"></i> 整合导出
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                        <div id="detailProgress" class="bg-primary h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>总进度</span>
+                        <span id="detailProgressText">0%</span>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-x-auto overflow-y-hidden p-6">
+                    <div class="flex space-x-6 h-full min-w-max">
+                        
+                        <div class="w-80 flex flex-col bg-gray-100 rounded-lg border border-gray-200 h-full">
+                            <div class="p-3 border-b border-gray-200 font-bold text-gray-700 flex justify-between">
+                                <span><i class="fa fa-inbox mr-2"></i>待处理任务</span>
+                                <button onclick="openAddTaskModal()" class="text-primary hover:bg-white rounded px-2 text-sm manager-only">+ 发布</button>
+                            </div>
+                            <div id="colTodo" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                                </div>
+                        </div>
+
+                        <div class="w-80 flex flex-col bg-blue-50 rounded-lg border border-blue-100 h-full">
+                            <div class="p-3 border-b border-blue-200 font-bold text-blue-800">
+                                <i class="fa fa-pencil-square-o mr-2"></i>翻译中
+                            </div>
+                            <div id="colDoing" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar"></div>
+                        </div>
+
+                        <div class="w-80 flex flex-col bg-yellow-50 rounded-lg border border-yellow-100 h-full">
+                            <div class="p-3 border-b border-yellow-200 font-bold text-yellow-800">
+                                <i class="fa fa-check-square-o mr-2"></i>待审校/整合
+                            </div>
+                            <div id="colReview" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar"></div>
+                        </div>
+
+                        <div class="w-80 flex flex-col bg-green-50 rounded-lg border border-green-100 h-full">
+                            <div class="p-3 border-b border-green-200 font-bold text-green-800">
+                                <i class="fa fa-flag-checkered mr-2"></i>已定稿
+                            </div>
+                            <div id="colDone" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="createProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+        <div class="bg-white rounded-lg w-[500px] p-6 shadow-xl animate-fade-in">
+            <h3 class="text-xl font-bold mb-4">创建新翻译项目</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">项目名称</label>
+                    <input type="text" id="newProjName" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-primary/50 outline-none" placeholder="例如：春节文化宣传手册翻译">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">挂载语料库 (资源共享)</label>
+                    <select id="newProjGlossary" class="w-full border rounded px-3 py-2 bg-white">
+    <option value="">-- 选择共享术语库 --</option>
+    <option value="1">传统节日核心术语库</option> <option value="2">非遗通用词表</option>     <option value="3">中医药专业术语</option>     </select>
+                    <p class="text-xs text-gray-500 mt-1">* 选中后，项目内所有译员将自动同步该术语库的最新更新。</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">截止日期</label>
+                    <input type="date" id="newProjDate" class="w-full border rounded px-3 py-2">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button onclick="closeModal('createProjectModal')" class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50">取消</button>
+                <button onclick="createProject()" class="px-4 py-2 bg-primary text-white rounded hover:bg-red-600">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+        <div class="bg-white rounded-lg w-[500px] p-6 shadow-xl">
+            <h3 class="text-xl font-bold mb-4">发布翻译任务</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">任务/章节名称</label>
+                    <input type="text" id="newTaskName" class="w-full border rounded px-3 py-2" placeholder="例如：第一章 节日起源">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">原文内容</label>
+                    <textarea id="newTaskContent" rows-4 class="w-full border rounded px-3 py-2 text-sm" placeholder="输入或粘贴需要翻译的原文段落..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">指派译员</label>
+                    <select id="newTaskAssignee" class="w-full border rounded px-3 py-2">
+                        <option value="译员A">译员A (张三)</option>
+                        <option value="译员B">译员B (李四)</option>
+                        <option value="译员C">译员C (王五)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button onclick="closeModal('addTaskModal')" class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50">取消</button>
+                <button onclick="addTask()" class="px-4 py-2 bg-primary text-white rounded hover:bg-red-600">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+        <div class="bg-white rounded-lg w-[800px] h-[80vh] flex flex-col p-6 shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="text-xl font-bold">任务审校与整合</h3>
+                <button onclick="closeModal('reviewModal')" class="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+            </div>
+            
+            <div class="flex-1 flex space-x-4 overflow-hidden mb-4">
+                <div class="flex-1 flex flex-col">
+                    <span class="text-sm font-bold text-gray-500 mb-1">原文</span>
+                    <div id="reviewSrc" class="flex-1 p-3 bg-gray-50 rounded border overflow-y-auto text-sm"></div>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <span class="text-sm font-bold text-primary mb-1">译文 (可直接修订)</span>
+                    <textarea id="reviewDst" class="flex-1 p-3 border-2 border-blue-100 rounded focus:border-primary outline-none resize-none text-sm"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded">
+                <div class="text-sm text-gray-500">
+                    当前状态: <span id="reviewStatus" class="font-bold text-blue-600"></span>
+                </div>
+                <div class="space-x-3" id="reviewActions">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectChatBox" class="fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col transition-all duration-300 transform translate-y-0 z-40" style="height: 400px;transform: translateY(355px);">
+        <div class="bg-gray-800 text-white p-3 rounded-t-lg flex justify-between items-center cursor-pointer" onclick="toggleChat()">
+            <h3 class="font-bold text-sm"><i class="fa fa-comments mr-2"></i>项目留言板</h3>
+            <i class="fa fa-chevron-up" id="chatToggleIcon"></i>
+        </div>
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-3 bg-gray-50 space-y-3 custom-scrollbar">
+            <div class="text-center text-xs text-gray-400 mt-2">暂无留言，开始讨论吧~</div>
+        </div>
+        <div class="p-3 border-t border-gray-200 bg-white rounded-b-lg">
+            <div class="flex space-x-2">
+                <input type="text" id="chatInput" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-primary" placeholder="输入留言...">
+                <button onclick="sendProjectMessage()" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-red-600">发送</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="script.js"></script>
+    
+</body>
+</html>

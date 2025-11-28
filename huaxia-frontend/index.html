@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>华夏译典通 - 术语管理六大板块</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- 引入Google Fonts的马善政字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
-    <!-- 自定义Tailwind配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -20,13 +16,9 @@
                         secondary: '#f5f5f5', // 浅灰色背景
                         dark: '#333333', // 深色文本
                         light: '#f9f9f9', // 浅色背景
-                        // 朱砂红/赤色背景
                         vermilion: "#9D2933",
-                        // 深褐色
                         "deep-brown": "#3D1E15",
-                        // 牙白
                         ivory: "#F8F4E6",
-                        // 青绿色
                         teal: "#00A680",
                     },
                     fontFamily: {
@@ -37,16 +29,50 @@
             }
         }
     </script>
-    <!-- 外部样式文件 -->
-    <link rel="stylesheet" href="/mainpage/style.css">
+    <link rel="stylesheet" href="./mainpage/style.css">
     
-    <!-- AI助手自定义样式 -->
     <style>
+        /* 教程弹窗样式 */
+        .tutorial-step {
+            transition: all 0.3s ease;
+            border-left: 4px solid #e5e7eb;
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .tutorial-step:hover {
+            border-left-color: #e63e34;
+        }
+        .tutorial-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: -1.35rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: #e63e34;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        .placeholder-box {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: #6b7280;
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
         /* AI助手浮动按钮动画 */
         #aiAssistantBtn button {
             animation: float 3s ease-in-out infinite;
         }
-        
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -67,10 +93,7 @@
             display: flex;
             flex-direction: column;
         }
-        
-        #aiAssistantDrawer.open {
-            transform: translateX(0);
-        }
+        #aiAssistantDrawer.open { transform: translateX(0); }
         
         /* 遮罩层 */
         #aiAssistantOverlay {
@@ -82,105 +105,70 @@
             transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
             z-index: 999;
         }
+        #aiAssistantOverlay.show { opacity: 1; visibility: visible; }
         
-        #aiAssistantOverlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
+        .ai-message { animation: messageSlide 0.3s ease-out; }
+        @keyframes messageSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 聊天消息动画 */
-        .ai-message {
-            animation: messageSlide 0.3s ease-out;
-        }
+        #aiChatList::-webkit-scrollbar { width: 4px; }
+        #aiChatList::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 2px; }
+        #aiChatList::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 2px; }
+        #aiChatList::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
         
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* 滚动条样式 */
-        #aiChatList::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        #aiChatList::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 2px;
-        }
-        
-        #aiChatList::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 2px;
-        }
-        
-        #aiChatList::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-        
-        /* 响应式 */
-        @media (max-width: 640px) {
-            #aiAssistantDrawer {
-                width: 100%;
-            }
-        }
+        @media (max-width: 640px) { #aiAssistantDrawer { width: 100%; } }
     </style>
 </head>
 <body class="bg-secondary min-h-screen flex flex-col text-dark">
-    <!-- 顶部导航栏 -->
     <header class="bg-white border-b border-gray-200 h-16 sticky top-0 z-50">
         <div class="container mx-auto px-4 h-full">
             <div class="flex items-center justify-between h-full">
-                <!-- 左侧Logo -->
                 <a href="index.html" class="text-xl font-bold text-[#3D1E15] flex items-center hover:text-primary transition-colors">
                     <span class="mr-2 text-2xl">📚</span>
                     华夏译典通
                 </a>
                 
-                <!-- 中间语言资产下拉菜单 -->
-                <div class="relative">
-                    <button id="languageAssetsBtn" class="flex items-center px-4 py-2 rounded-md text-[#3D1E15] hover:bg-gray-50 transition-colors">
-                        语言资产
-                        <i class="fa fa-chevron-down ml-2 text-xs"></i>
-                    </button>
-                    <div id="languageAssetsDropdown" class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden z-50">
-                        <div class="py-1">
-                            <a href="terminology_management/terminology_management.html" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
-                                <i class="fa fa-book mr-2"></i>术语库管理
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
-                                <i class="fa fa-database mr-2"></i>记忆库管理
-                            </a>
+                <div class="flex items-center space-x-6">
+                    <div class="relative group">
+                        <button id="languageAssetsBtn" class="flex items-center px-4 py-2 rounded-md text-[#3D1E15] hover:bg-gray-50 transition-colors">
+                            语言资产
+                            <i class="fa fa-chevron-down ml-2 text-xs transition-transform group-hover:rotate-180"></i>
+                        </button>
+                        <div id="languageAssetsDropdown" class="absolute left-1/2 transform -translate-x-1/2 mt-0 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden group-hover:block z-50 pt-2">
+                            <div class="py-1">
+                                <a href="terminology_management/terminology_management.html" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50 hover:text-primary">
+                                    <i class="fa fa-book mr-2"></i>术语库管理
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50 hover:text-primary">
+                                    <i class="fa fa-database mr-2"></i>记忆库管理
+                                </a>
+                            </div>
                         </div>
                     </div>
+
+                    <button onclick="document.getElementById('tutorialModal').classList.remove('hidden')" class="flex items-center px-4 py-2 rounded-md text-primary hover:bg-red-50 transition-colors font-medium">
+                        <i class="fa fa-book-open mr-2"></i>模板填写指南
+                    </button>
                 </div>
                 
-                <!-- 右侧用户信息 -->
                 <div class="flex items-center space-x-4">
-                    <div class="relative">
+                    <div class="relative group">
                         <button id="userBtn" class="flex items-center">
                             <img src="https://picsum.photos/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary">
                             <i class="fa fa-caret-down ml-2 text-xs text-gray-500"></i>
                         </button>
-                        <!-- 用户下拉菜单 -->
-                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden z-50">
+                        <div id="userDropdown" class="hidden absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden group-hover:block z-50 pt-2">
                             <div class="py-1">
                                 <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
                                     <i class="fa fa-file-text-o mr-2"></i>模板管理
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
+                                <a href="project_management/index.html" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">
                                     <i class="fa fa-tasks mr-2"></i>项目管理
                                 </a>
+                                
                                 <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">个人中心</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-[#3D1E15] hover:bg-gray-50">账号设置</a>
                                 <div class="border-t border-gray-200 my-1"></div>
                                 <a href="login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors js-logout">退出登录</a>
-
                             </div>
                         </div>
                     </div>
@@ -189,170 +177,161 @@
         </div>
     </header>
     
-    <!-- 主内容区 -->
     <main class="flex-1 flex items-center justify-center p-4 pt-8">
-        <!-- 六大板块内容 - 居中显示 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
-            <!-- 思想流派 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jrGpdSR0qgtOxwGNbcURgNhh0ouK4m.png"
-                        alt="中国传统思想流派图示，展示儒家、道家和佛家思想的交融"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jrGpdSR0qgtOxwGNbcURgNhh0ouK4m.png" alt="思想流派" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">☯️</span>
-                        思想流派
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">☯️</span> 思想流派
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">儒道释等思想体系的阐释</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">儒道释等思想体系的阐释</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
 
-            <!-- 诗词歌赋 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-1XbxCveqQa1oWiT7ZupevNQ4vFD5VG.png"
-                        alt="古代文人在亭台楼阁中吟诗作赋的场景"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-1XbxCveqQa1oWiT7ZupevNQ4vFD5VG.png" alt="诗词歌赋" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">🖋️</span>
-                        诗词歌赋
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">🖋️</span> 诗词歌赋
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">中国诗词的韵律与意境传译</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">中国诗词的韵律与意境传译</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
 
-            <!-- 民俗音乐 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-a9mKkaR9ggxfCtUXBPNpwpKiVQq2dY.png"
-                        alt="传统乐器如古琴、琵琶、二胡的演奏场景"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-a9mKkaR9ggxfCtUXBPNpwpKiVQq2dY.png" alt="民俗音乐" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">🪕</span>
-                        民俗音乐
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">🪕</span> 民俗音乐
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">传统音乐与民间艺术的解读</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">传统音乐与民间艺术的解读</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
 
-            <!-- 非遗传承 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DvX4FlRoipTzL22m0C80l7EcyabcqY.png"
-                        alt="传统工艺如剪纸、刺绣、木雕等非物质文化遗产展示"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DvX4FlRoipTzL22m0C80l7EcyabcqY.png" alt="非遗传承" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">🏮</span>
-                        非遗传承
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">🏮</span> 非遗传承
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">非物质文化遗产的保护与传承</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">非物质文化遗产的保护与传承</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
 
-            <!-- 饮食文化 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-KivCWXqLyCFppl79cIAFcGOt3KSEqM.png"
-                        alt="中国传统美食与茶道文化展示"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-KivCWXqLyCFppl79cIAFcGOt3KSEqM.png" alt="饮食文化" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">🍵</span>
-                        饮食文化
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">🍵</span> 饮食文化
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">中华美食与饮食礼仪的诠释</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">中华美食与饮食礼仪的诠释</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
 
-            <!-- 传统节日 -->
-            <div class="bg-white rounded-lg overflow-hidden category-card">
+            <div class="bg-white rounded-lg overflow-hidden category-card hover-lift">
                 <div class="relative h-40 w-full image-container">
-                    <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OGH6iqPwc9qKZi5qGxfER8xKukudRa.png"
-                        alt="春节、中秋等传统节日的庆祝场景"
-                        class="w-full h-full object-cover category-image"
-                    />
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OGH6iqPwc9qKZi5qGxfER8xKukudRa.png" alt="传统节日" class="w-full h-full object-cover category-image"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#3D1E15]/70 to-transparent"></div>
-                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center">
-                        <span class="mr-2 text-2xl">🧨</span>
-                        传统节日
+                    <div class="absolute bottom-2 left-2 text-white text-xl font-bold flex items-center ">
+                        <span class="mr-2 text-2xl">🧨</span> 传统节日
                     </div>
                 </div>
-                <div class="p-3 pt-2 pb-1">
-                    <p class="text-[#3D1E15]/80 text-sm">节日习俗与文化内涵的阐释</p>
-                </div>
-                <div class="p-2">
-                    <button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors">
-                        探索
-                    </button>
-                </div>
+                <div class="p-3 pt-2 pb-1"><p class="text-[#3D1E15]/80 text-sm">节日习俗与文化内涵的阐释</p></div>
+                <div class="p-2"><button class="bg-[#9D2933] hover:bg-[#9D2933]/80 text-white text-sm w-full py-1.5 rounded-md transition-colors custom-explore-btn">探索</button></div>
             </div>
-            </div>
-
+        </div>
     </main>
 
-    <!-- AI助手浮动按钮 -->
+    <div id="tutorialModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[1001] flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-[#3D1E15] text-white">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">📖</span>
+                    <h2 class="text-xl font-bold tracking-wide">提示词模板填写指南</h2>
+                </div>
+                <button onclick="document.getElementById('tutorialModal').classList.add('hidden')" class="text-white/80 hover:text-white text-2xl transition-colors">&times;</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-8 bg-gray-50 custom-scrollbar">
+                <div class="max-w-3xl mx-auto">
+                    <p class="text-gray-600 mb-8 text-center text-lg">
+                        精准的提示词是获取高质量AI翻译的关键。即使没有预设字段，您也可以参考以下步骤自行构建完美的翻译指令。
+                    </p>
+
+                    <div class="tutorial-step" data-step="1">
+                        <h3 class="font-bold text-lg text-[#3D1E15] mb-2">定义原文背景</h3>
+                        <p class="text-gray-600 text-sm mb-3">告诉AI这段文字是谁写的？什么年代？属于什么流派？</p>
+                        <div class="placeholder-box bg-white border-dashed border-2 border-gray-300 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-4 text-left">
+                                <div><span class="text-xs text-gray-400 block">朝代/时期</span><span class="font-medium text-gray-800">唐代</span></div>
+                                <div><span class="text-xs text-gray-400 block">作者/来源</span><span class="font-medium text-gray-800">李白 / 民间传说</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step" data-step="2">
+                        <h3 class="font-bold text-lg text-[#3D1E15] mb-2">设定文本特征</h3>
+                        <p class="text-gray-600 text-sm mb-3">这篇文章的风格是怎样的？是严肃的学术论文，还是活泼的旅游指南？</p>
+                        <div class="placeholder-box bg-white border-dashed border-2 border-gray-300 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-4 text-left">
+                                <div><span class="text-xs text-gray-400 block">体裁</span><span class="font-medium text-gray-800">诗歌 / 散文 / 说明文</span></div>
+                                <div><span class="text-xs text-gray-400 block">文风</span><span class="font-medium text-gray-800">豪放雄浑 / 婉约细腻 / 通俗易懂</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step" data-step="3">
+                        <h3 class="font-bold text-lg text-[#3D1E15] mb-2">明确翻译目标</h3>
+                        <p class="text-gray-600 text-sm mb-3">这篇译文是给谁看的？用来做什么？</p>
+                        <div class="placeholder-box bg-white border-dashed border-2 border-gray-300 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-4 text-left">
+                                <div><span class="text-xs text-gray-400 block">目标受众</span><span class="font-medium text-gray-800">海外游客 / 汉学研究者 / 儿童</span></div>
+                                <div><span class="text-xs text-gray-400 block">应用场景</span><span class="font-medium text-gray-800">博物馆导览 / 教材 / 宣传册</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step" data-step="4">
+                        <h3 class="font-bold text-lg text-[#3D1E15] mb-2">添加特殊指令</h3>
+                        <p class="text-gray-600 text-sm mb-3">有什么特别需要注意的地方吗？比如保留某些拼音，或者采用意译？</p>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
+                            <p class="text-sm text-yellow-800">
+                                <strong>💡 示例指令：</strong><br>
+                                "请保留'气'、'道'等核心术语的拼音，并在括号内提供英文解释；整体风格要典雅，符合英美文学的阅读习惯。"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button onclick="document.getElementById('tutorialModal').classList.add('hidden')" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-full font-bold shadow-lg transition-transform hover:scale-105">
+                            我学会了，去试试！
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="aiAssistantBtn" class="fixed bottom-6 right-6 z-50">
         <button class="bg-red-500 hover:bg-red-600 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
             <span class="text-sm font-bold group-hover:scale-110 transition-transform" style="font-family: 'Times New Roman', serif;">AI</span>
         </button>
     </div>
 
-    <!-- AI助手遮罩层 -->
     <div id="aiAssistantOverlay"></div>
 
-    <!-- AI助手侧边抽屉 -->
     <div id="aiAssistantDrawer">
-        <!-- 抽屉头部 -->
         <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
             <div class="flex items-center space-x-2">
                 <div class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center">
@@ -364,34 +343,22 @@
                 <i class="fa fa-times text-lg"></i>
             </button>
         </div>
-
-        <!-- 聊天区域 -->
         <div id="aiChatList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
             <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
                 <p class="text-sm text-gray-800">您好，我是华夏译典通AI助手。我可以帮您解答关于中华文化、翻译术语等专业问题。有什么我可以帮您的吗？</p>
             </div>
         </div>
-
-        <!-- 输入区域 -->
         <div class="border-t border-gray-200 p-4 bg-white">
             <div class="flex items-center space-x-2">
-                <input
-                    id="aiInput"
-                    type="text"
-                    class="flex-1 border border-gray-300 rounded-lg py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                    placeholder="向AI助手提问..."
-                >
-                <button id="aiSendBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center" title="发送">
-                    <i class="fa fa-paper-plane"></i>
-                </button>
+                <input id="aiInput" type="text" class="flex-1 border border-gray-300 rounded-lg py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50" placeholder="向AI助手提问...">
+                <button id="aiSendBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center" title="发送"><i class="fa fa-paper-plane"></i></button>
             </div>
             <div id="aiTip" class="mt-2 text-xs text-gray-500"></div>
         </div>
     </div>
 
-    <!-- 页脚 -->
     <footer class="bg-white border-t border-gray-200 py-4 px-6 text-xs text-gray-500">
-        <div class="container mx-auto">
+        <div class="container mx-auto text-center">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-2 md:mb-0">
                     <a href="#" class="hover:text-primary">关于我们</a> | 
@@ -399,23 +366,20 @@
                     <a href="#" class="hover:text-primary">使用条款</a> | 
                     <a href="#" class="hover:text-primary">隐私政策</a>
                 </div>
-                <div>
-                    © 2025 华夏译典通 版权所有
-                </div>
+                <div>© 2025 华夏译典通 版权所有</div>
             </div>
         </div>
     </footer>
     
-    <!-- 外部脚本文件 -->
-     <script>
+    <script>
     // 开发环境使用 Vite 代理，生产环境使用实际地址
     // 本地开发: http://localhost:5173 使用 /api 会通过 Vite 代理转发到 http://127.0.0.1:19200
     // 生产部署: 使用实际的网关地址
     window.API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? '/api'  // 本地开发使用 Vite 代理
+        ? '/api'  
         : 'http://106.53.26.235:19200';  // 生产环境使用实际地址
     </script>
-     <script src="/common-auth.js"></script>
-    <script src="/mainpage/script.js"></script>
+     <script src="./common-auth.js"></script>
+    <script src="./mainpage/script.js"></script>
 </body>
 </html>

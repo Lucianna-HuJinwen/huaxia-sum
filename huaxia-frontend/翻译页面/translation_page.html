@@ -9,12 +9,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <script>
         // 配置 PDF.js 解析器
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
-
-    <script>
+        
+        // 配置 Tailwind
         tailwind.config = {
             theme: {
                 extend: {
@@ -99,7 +100,7 @@
                         <div class="flex items-center space-x-1 border-l border-gray-300 pl-2">
                             <select id="fontSizeSelect" class="text-xs border border-gray-300 rounded px-1 py-1 text-gray-600 focus:outline-none h-8 w-16">
                                 <option value="1">极小</option><option value="2">小</option><option value="3" selected>正常</option>
-                                <option value="4">中等</option><option value="5">大</option><option value="6">极大</option><option value="7">最大</option>
+                                <option value="4">中等</option><option value="5">大</option><option value="6">极大</option><option value="7">巨无霸</option>
                             </select>
                             <button class="p-1.5 text-gray-600 hover:bg-gray-200 rounded" onclick="document.execCommand('bold')"><i class="fa fa-bold"></i></button>
                             <button class="p-1.5 text-gray-600 hover:bg-gray-200 rounded" onclick="document.execCommand('italic')"><i class="fa fa-italic"></i></button>
@@ -114,12 +115,39 @@
                             </div>
                             
                             <div class="h-4 w-px bg-gray-300 mx-1"></div>
-                            <div class="relative group">
-                                <button class="p-1.5 text-gray-600 hover:text-primary hover:bg-gray-100 rounded" title="导出"><i class="fa fa-download"></i></button>
-                                <div class="absolute bottom-full right-0 mb-2 w-32 bg-white shadow-lg rounded-md border border-gray-200 hidden group-hover:block">
-                                    <a href="#" id="exportWord" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa fa-file-word-o mr-2 text-blue-600"></i>导出 Word</a>
-                                    <a href="#" id="exportPDF" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa fa-file-pdf-o mr-2 text-red-600"></i>导出 PDF</a>
-                                </div>
+
+                            <!-- ① 外面加一层，用于控制点击展开 -->
+<div class="relative inline-block" id="exportWrapper">
+
+    <!-- 原按钮 -->
+    <button id="exportBtn"
+            class="p-1.5 text-gray-600 hover:text-primary hover:bg-gray-100 rounded"
+            title="导出">
+        <i class="fa fa-download"></i>
+    </button>
+
+    <!-- ② 删除 group-hover:block，默认隐藏，用 JS 控制 -->
+    <div id="exportMenu"
+         class="absolute bottom-full right-0 mb-2 w-32 bg-white shadow-lg rounded-md border border-gray-200 hidden">
+
+        <a href="#" id="exportWord" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <i class="fa fa-file-word-o mr-2 text-blue-600"></i>导出 Word
+        </a>
+
+        <a href="#" id="exportPDF" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <i class="fa fa-file-pdf-o mr-2 text-red-600"></i>导出 PDF
+        </a>
+
+        <a id="btnSaveToProject"
+           class="block px-4 py-2 text-sm text-green-700 hover:bg-green-50 ">
+            <i class="fa fa-floppy-o mr-2"></i> 保存并返回项目
+        </a>
+        
+        
+    </div>
+</div>
+
+
                             </div>
                         </div>
                     </div>

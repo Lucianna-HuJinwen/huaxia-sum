@@ -24,7 +24,6 @@
 <body class="bg-[#FFF8E1]">
   <div class="flex min-h-screen items-center justify-center p-4">
     <div class="container grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
-      <!-- 左侧品牌 -->
       <div class="flex flex-col items-center justify-center space-y-6 md:items-start">
         <h1 class="calligraphy-title text-5xl sm:text-6xl">华夏译典通</h1>
         <div class="relative inline-block mt-2">
@@ -39,7 +38,6 @@
         </div>
       </div>
 
-      <!-- 右侧 卡片 -->
       <div class="flex items-center justify-center">
         <div class="w-full max-w-lg py-2 bg-white rounded-lg shadow login-container">
           <div class="px-6 pt-6 flex items-center justify-between">
@@ -51,7 +49,6 @@
           </div>
 
           <div class="px-6 pb-6 pt-4">
-            <!-- 登录表单：邮箱 + 密码 -->
             <form id="form-login" class="space-y-4">
               <div class="space-y-2">
                 <label for="login-email" class="block text-sm font-medium input-label">邮箱</label>
@@ -65,13 +62,12 @@
               </div>
               <div class="flex justify-between text-sm">
                 <a href="javascript:void(0)" id="to-register" class="red-link hover:underline">没有账号？去注册</a>
-                <a href="/forgot-password" class="red-link hover:underline">忘记密码</a>
+                <a href="javascript:void(0)" id="to-forgot" class="red-link hover:underline">忘记密码</a>
               </div>
               <button type="submit" class="w-full text-white py-2 rounded red-button hover:bg-red-700">登录</button>
               <p id="tip-login" class="muted"></p>
             </form>
 
-            <!-- 注册表单：邮箱 + 验证码 + 昵称 + 密码 + 确认密码 -->
             <form id="form-register" class="space-y-4 hidden">
               <div class="space-y-2">
                 <label for="reg-email" class="block text-sm font-medium input-label">邮箱</label>
@@ -112,19 +108,17 @@
     </div>
   </div>
 
-<!-- 放在 login.html 里你自己的 <script> 之前 -->
 <script>window.API_BASE = '/api';</script>
-<script src="/common-api.js"></script>
-<script src="/common-auth.js"></script>
+<script src="./common-api.js"></script>
+<script src="./common-auth.js"></script>
 
-  <!-- 逻辑脚本 -->
   <script>
-    /** ========== 配置：只需改这里就能从 Mock 切到正式 ========== */
-    const BASE = "/api";                       // 固定走 Vite 代理
-    const PATH_SEND_CODE = "/user/sendCode";   // 发送验证码（你们文档：Query ?email）
-    const PATH_LOGIN     = "/user/pwd/login";  // 登录（邮箱+密码）
-    const PATH_REGISTER  = "/user/register";   // 注册（email, code, password, confirmPassword, nickname）
-    const SEND_CODE_USE_QUERY = true;          // 后端恢复后若改成 body 传 email，把它设为 false
+    /** ========== 配置 ========== */
+    const BASE = "/api";
+    const PATH_SEND_CODE = "/user/sendCode";
+    const PATH_LOGIN     = "/user/pwd/login";
+    const PATH_REGISTER  = "/user/register";
+    const SEND_CODE_USE_QUERY = true;
     const TOKEN_KEY = "hxytt_token";
 
     /** ========== 小工具 ========== */
@@ -153,13 +147,23 @@
     const tabLogin = $("#tab-login"), tabReg = $("#tab-register");
     const formLogin = $("#form-login"), formReg = $("#form-register");
     const toRegister = $("#to-register");
+    const toForgot = $("#to-forgot"); // 新增：忘记密码链接
+
     function showLogin(){ formLogin.classList.remove("hidden"); formReg.classList.add("hidden"); tabLogin.classList.add("active"); tabReg.classList.remove("active"); }
     function showRegister(){ formReg.classList.remove("hidden"); formLogin.classList.add("hidden"); tabReg.classList.add("active"); tabLogin.classList.remove("active"); }
+    
     tabLogin.addEventListener("click", showLogin);
     tabReg.addEventListener("click", showRegister);
     toRegister.addEventListener("click", showRegister);
+    
+    // 【修改点1】忘记密码 -> 跳到注册页并聚焦邮箱
+    toForgot.addEventListener("click", ()=>{
+        showRegister();
+        $("#reg-email").focus();
+        setERR($("#tip-register"), "请使用邮箱和验证码重置密码");
+    });
 
-    /** ========== 发送验证码（注册用） ========== */
+    /** ========== 发送验证码 ========== */
     $("#btn-sendcode").addEventListener("click", async ()=>{
       const email = $("#reg-email").value.trim();
       const tip = $("#tip-sendcode");
@@ -177,7 +181,7 @@
       }catch(e){ btn.disabled=false; btn.textContent="获取验证码"; setERR(tip, e.message); }
     });
 
-    /** ========== 注册（验证码） ========== */
+    /** ========== 注册 ========== */
     $("#form-register").addEventListener("submit", async (ev)=>{
       ev.preventDefault();
       const email = $("#reg-email").value.trim();
@@ -192,12 +196,21 @@
       setMuted(tip,"注册中…");
       try{
         const res = await api(PATH_REGISTER, { method:"POST", body:{ email, code, password, confirmPassword, nickName: nickname } });
-        setOK(tip, res?.message || "注册成功，请前往登录");
-        showLogin();
+        setOK(tip, res?.message || "注册成功");
+        
+        // 【修改点2】注册成功后弹窗 + 跳转登录
+        setTimeout(() => {
+            alert("注册成功！请使用新账号登录。");
+            showLogin();
+            // 自动填充刚注册的邮箱
+            $("#login-email").value = email;
+            $("#login-password").focus();
+        }, 500);
+        
       }catch(e){ setERR(tip, e.message); }
     });
 
-    /** ========== 登录（邮箱+密码） ========== */
+    /** ========== 登录 ========== */
     $("#form-login").addEventListener("submit", async (ev)=>{
       ev.preventDefault();
       const email = $("#login-email").value.trim();
@@ -209,9 +222,18 @@
         const res = await api(PATH_LOGIN, { method:"POST", body:{ email, password } });
         const token = res?.data || res?.token;
         if(!token) throw new Error("后端未返回 token");
-        CommonAuth.setToken(token);
+        
+        // 使用 common-auth.js 存 token (如果有)
+        if(window.CommonAuth && CommonAuth.setToken) {
+            CommonAuth.setToken(token);
+        } else {
+            localStorage.setItem(TOKEN_KEY, token);
+        }
+        
         setOK(tip, "登录成功，正在进入系统…");
-        window.location.href = "index.html";
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 800);
       }catch(e){ setERR(tip, e.message); }
     });
   </script>
